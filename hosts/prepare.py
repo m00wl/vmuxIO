@@ -11,7 +11,7 @@ os.chdir(ROOT)
 
 
 U = TypeVar('U')
-def unwrap(a: Optional[U]) -> U: 
+def unwrap(a: Optional[U]) -> U:
     assert a is not None
     return a
 
@@ -90,7 +90,7 @@ def apply(hostcfg: str, function: Callable[[str], None]) -> None:
         function(ethDut)
 
 def checkIommu(hostcfg: str) -> None:
-    iommu_on = os.path.isdir("/sys/devices/virtual/iommu")
+    iommu_on = os.path.isdir("/sys/class/iommu")
     assert iommu_on == hostcfg['iommu_on'], f"Iommu_is_on = {iommu_on} which is not what config requires"
 
 def checkHugepages(hostcfg: str) -> None:
@@ -102,7 +102,7 @@ def checkHugepages(hostcfg: str) -> None:
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Apply host yamls.')
-    parser.add_argument('file', type=str, 
+    parser.add_argument('file', type=str,
                         help='The yaml file to apply')
     args = parser.parse_args()
     yamlPath = Path(CALLEE_DIR)
