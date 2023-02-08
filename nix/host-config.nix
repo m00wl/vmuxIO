@@ -1,4 +1,4 @@
-{ config, lib, pkgs, 
+{ config, lib, pkgs, self, system,
 extkern ? false, # whether to use externally, manually built kernel
 ... }:
 {
@@ -67,6 +67,7 @@ extkern ? false, # whether to use externally, manually built kernel
     qemu
     htop
     tmux
+    just
     tunctl
     bridge-utils
     killall
@@ -76,11 +77,13 @@ extkern ? false, # whether to use externally, manually built kernel
     (writeScriptBin "devmem" ''
       ${busybox}/bin/devmem $@
     '')
-  ];
+  ] ++ (with self.packages.${system}; [
+    moongen-lachnit
+  ]);
 
   # for libvfio-user testing with simple gpio device
-  boot.kernelModules = [ 
-    "gpio-pci-idio-16"  
+  boot.kernelModules = [
+    "gpio-pci-idio-16"
   ];
   boot.kernelPatches = [{
     name = "enable gpio fs";

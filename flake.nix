@@ -92,7 +92,7 @@
       host-image = nixos-generators.nixosGenerate {
         inherit pkgs;
         modules = [ (import ./nix/host-config.nix {
-          inherit pkgs;
+          inherit self system pkgs;
           inherit (pkgs) lib;
           inherit (self) config;
           extkern = false;
@@ -102,7 +102,7 @@
       host-extkern-image = nixos-generators.nixosGenerate {
         inherit pkgs;
         modules = [ (import ./nix/host-config.nix {
-          inherit pkgs;
+          inherit self system pkgs;
           inherit (pkgs) lib;
           inherit (self) config;
           extkern = true;
@@ -164,7 +164,7 @@
       host = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [ (import ./nix/host-config.nix {
-            inherit pkgs;
+            inherit self pkgs;
             inherit (pkgs) lib;
             inherit (self) config;
             extkern = false;
@@ -175,11 +175,12 @@
       host-extkern = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [ (import ./nix/host-config.nix {
-          inherit pkgs;
-          inherit (pkgs) lib;
-          inherit (self) config;
-          extkern = true;
-        }) ];
+            inherit self pkgs;
+            inherit (pkgs) lib;
+            inherit (self) config;
+            extkern = true;
+          })
+        ];
       };
       # not bootable per se:
       #guest = nixpkgs.lib.nixosSystem {

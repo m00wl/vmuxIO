@@ -23,7 +23,8 @@ ssh COMMAND="":
 vm-update config:
   just ssh "cd /mnt && nixos-rebuild switch --flake .#{{config}}"
 
-vm EXTRA_CMDLINE="" PASSTHROUGH=`yq -r '.devices[] | select(.name=="ethDut") | ."pci"' hosts/$(hostname).yaml`:
+vm EXTRA_CMDLINE="" PTGEN=`yq -r '.devices[] | select(.name=="ethLoadgen") |
+."pci"' hosts/$(hostname).yaml` PTDUT=`yq -r '.devices[] | select(.name=="ethDut") | ."pci"' hosts/$(hostname).yaml`:
     sudo qemu-system-x86_64 \
         -cpu host \
         -enable-kvm \
@@ -34,7 +35,8 @@ vm EXTRA_CMDLINE="" PASSTHROUGH=`yq -r '.devices[] | select(.name=="ethDut") | .
         -drive file={{proot}}/VMs/host-image.qcow2 \
         -net nic,netdev=user.0,model=virtio \
         -netdev user,id=user.0,hostfwd=tcp:127.0.0.1:{{qemu_ssh_port}}-:22 \
-        -device vfio-pci,host={{PASSTHROUGH}} \
+        -device vfio-pci,host={{PTGEN}} \
+        -device vfio-pci,host={{PTDUT}} \
         -nographic
 
 vm-libvfio-user:
@@ -138,7 +140,7 @@ dpdk-setup:
   sudo mount -t hugetlbfs -o pagesize=1G nodev /dev/huge1Gpages
   sudo ./build/examples/dpdk-helloworld --lcores 2 # needed, because moongen cant load firmware
 
-vmdq-example: 
+vmdq-example:
   echo on christina with X550 with vfio-pci
   sudo ./examples/dpdk-vmdq_dcb -l 1-4 -n 4 -a 01:00.0 -a 01:00.1 -- -p 3 --nb-pools 32 --nb-tcs 4
   echo displays that it is forwarding stuff
@@ -168,7 +170,7 @@ dpdk_helloworld: dpdk-setup
   meson configure -Denable_kmods=true
   meson configure -Dkernel_dir=/nix/store/2g9vnkxppkx21jgkf08khkbaxpfxmj1s-linux-5.10.110-dev/lib/modules/5.10.110/build
 
-pktgen: 
+pktgen:
   nix shell .#pktgen
   sudo pktgen -l 0-4 --proc-type auto -- -P -m "[1:3].0, [2:4].1" -f ../Pktgen-DPDK/test/test_seq.lua
   # more cores doesnt help:

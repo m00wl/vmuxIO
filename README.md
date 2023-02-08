@@ -19,7 +19,7 @@ just build
 run checks and bind correct dpdk/passthrough drivers
 
 ```shell
-just prepare ./hosts/ryan.yaml 
+just prepare ./hosts/ryan.yaml
 ```
 
 do a performance measurement with moongen-lachnit:
@@ -45,6 +45,7 @@ just vm-update host-config
 ## Notes on IOMMU/VFs
 
 Iommu: check that it is enabled
+on Intel:
 ```
 $ find /sys | grep dmar
 /sys/devices/virtual/iommu/dmar0
@@ -53,6 +54,13 @@ $ find /sys | grep dmar
 /sys/class/iommu/dmar1
 $ dmesg | grep IOMMU
 ... DMAR: IOMMU enabled
+```
+on AMD:
+```
+$ find /sys | grep ivhd
+...
+/sys/class/iommu/ivhd0
+...
 ```
 
 and find its groups at `/sys/kernel/iommu_groups`

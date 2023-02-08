@@ -90,7 +90,7 @@ def apply(hostcfg: str, function: Callable[[str], None]) -> None:
         function(ethDut)
 
 def checkIommu(hostcfg: str) -> None:
-    iommu_on = os.path.isdir("/sys/class/iommu")
+    iommu_on = len(os.listdir("/sys/class/iommu")) != 0
     assert iommu_on == hostcfg['iommu_on'], f"Iommu_is_on = {iommu_on} which is not what config requires"
 
 def checkHugepages(hostcfg: str) -> None:
