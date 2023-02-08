@@ -95,6 +95,12 @@ extkern ? false, # whether to use externally, manually built kernel
     '';
   }];
 
+  # enable hugepages
+  boot.kernelParams = [
+    "vm.nr_hugepages=8"
+    "vm.nr_hugepages_mempolicy=8"
+  ];
+
   # boot.kernelPackages = let
   #   linux_ioregfd_pkg = { fetchurl, buildLinux, ... } @ args:
 

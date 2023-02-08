@@ -18,7 +18,7 @@ def unwrap(a: Optional[U]) -> U:
 
 # import dpdk helper code
 import importlib.util
-spec = unwrap(importlib.util.spec_from_file_location("dpdk_devbind", "../mg21/bin/libmoon/deps/dpdk/usertools/dpdk-devbind.py"))
+spec = unwrap(importlib.util.spec_from_file_location("dpdk_devbind", "../mgln/bin/libmoon/deps/dpdk/usertools/dpdk-devbind.py"))
 dpdk_devbind = importlib.util.module_from_spec(spec)
 unwrap(spec.loader).exec_module(dpdk_devbind)
 
